@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - Smart Complaint System</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to right,#1e3c72,#2a5298);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* TOP BAR */
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:15px 20px;
+    background:#111;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:18px;
+}
+
+/* LANGUAGE SELECT */
+.lang-select{
+    padding:5px;
+    border-radius:5px;
+}
+
+/* LOGIN CARD */
+.container{
+    background:white;
+    padding:40px;
+    border-radius:18px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.4);
+    width:420px;
+    text-align:center;
+    animation:fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+h2{
+    margin-bottom:25px;
+    color:#1e3c72;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:12px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#1e3c72;
+    outline:none;
+    box-shadow:0 0 6px rgba(30,60,114,0.4);
+}
+
+button{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    background:#1e3c72;
+    color:white;
+    border:none;
+    font-size:17px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#16325c;
+}
+
+/* REGISTER LINK */
+.register-text{
+    margin-top:18px;
+    font-size:14px;
+}
+
+.register-text a{
+    text-decoration:none;
+    color:#1e3c72;
+    font-weight:bold;
+}
+
+.register-text a:hover{
+    text-decoration:underline;
+}
+
+.footer{
+    margin-top:15px;
+    font-size:12px;
+    color:gray;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <!-- Ye text language change me affect nahi hoga -->
+    <div>Smart Complaint Management System</div>
+
+    <select class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+    </select>
+</div>
+
+<div class="container">
+
+<h2 id="formTitle">User Login</h2>
+
+<form action="/login" method="post">
+
+<input type="email" name="email" id="emailField" placeholder="Enter Email" required>
+
+<input type="password" name="password" id="passwordField" placeholder="Enter Password" required>
+
+<button type="submit" id="loginBtn">Login</button>
+
+</form>
+
+<div class="register-text" id="registerText">
+    Don't have an account?
+    <a href="/register" id="registerLink">Register</a>
+</div>
+
+<div class="footer">
+Smart Complaint Management System
+</div>
+
+</div>
+
+<script>
+
+function changeLanguage(lang){
+
+    if(lang === "hi"){
+
+        document.getElementById("formTitle").innerText="उपयोगकर्ता लॉगिन";
+        document.getElementById("emailField").placeholder="ईमेल दर्ज करें";
+        document.getElementById("passwordField").placeholder="पासवर्ड दर्ज करें";
+        document.getElementById("loginBtn").innerText="लॉगिन करें";
+
+        document.getElementById("registerText").innerHTML=
+        'खाता नहीं है? <a href="/register">पंजीकरण करें</a>';
+
+    }
+    else{
+
+        document.getElementById("formTitle").innerText="User Login";
+        document.getElementById("emailField").placeholder="Enter Email";
+        document.getElementById("passwordField").placeholder="Enter Password";
+        document.getElementById("loginBtn").innerText="Login";
+
+        document.getElementById("registerText").innerHTML=
+        'Don\'t have an account? <a href="/register">Register</a>';
+    }
+}
+
+</script>
+
+</body>
+</html>

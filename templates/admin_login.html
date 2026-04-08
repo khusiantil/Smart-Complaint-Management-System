@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login - Smart Complaint System</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to right,#1e3c72,#2a5298);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding: 20px;
+}
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:15px 20px;
+    background:#111;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:18px;
+    box-sizing: border-box;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 60px;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    border-radius:18px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.4);
+    text-align:center;
+    animation:fadeIn 0.5s ease-in-out;
+}
+
+.credentials-box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.credentials-box h3 {
+    color: #1e3c72;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.credential-item {
+    background: #f0f4f8;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border-left: 4px solid #1e3c72;
+    text-align: left;
+}
+
+.credential-item strong {
+    color: #1e3c72;
+    display: array;
+}
+
+.credential-item small {
+    color: #666;
+    display: block;
+    margin-top: 5px;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+h2{
+    margin-bottom:25px;
+    color:#1e3c72;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:12px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+    box-sizing: border-box;
+}
+
+input:focus{
+    border-color:#1e3c72;
+    outline:none;
+    box-shadow:0 0 6px rgba(30,60,114,0.4);
+}
+
+button{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    background:#1e3c72;
+    color:white;
+    border:none;
+    font-size:17px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#16325c;
+}
+
+.error-msg {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+}
+
+.footer{
+    margin-top:15px;
+    font-size:12px;
+    color:gray;
+}
+
+.back-link {
+    display: block;
+    margin-top: 15px;
+    color: #1e3c72;
+    text-decoration: none;
+    font-weight: bold;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div>Smart Complaint Management System - Admin Portal</div>
+</div>
+
+<div class="main-container">
+    
+    <!-- Login Form -->
+    <div class="container">
+        <h2>🔐 Department Login</h2>
+        
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form action="/admin_login" method="post">
+            <input type="text" name="username" placeholder="Department ID (electricity, water, road, etc.)" required>
+            <input type="password" name="password" placeholder="Enter Department Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <a href="/" class="back-link">← Back to Home</a>
+        <div class="footer">Smart Complaint Management System</div>
+    </div>
+
+    <!-- Credentials Reference -->
+    <div class="credentials-box">
+        <h3>📋 Department Credentials</h3>
+        
+        <div class="credential-item">
+            <strong>⚡ Electricity Department</strong>
+            <small>ID: <code>electricity</code> | Pass: <code>ElecAdmin@2026</code></small>
+        </div>
+
+        <div class="credential-item">
+            <strong>💧 Water Department</strong>
+            <small>ID: <code>water</code> | Pass: <code>WaterAdmin@2026</code></small>
+        </div>
+
+        <div class="credential-item">
+            <strong>🛣️ Road Department</strong>
+            <small>ID: <code>road</code> | Pass: <code>RoadAdmin@2026</code></small>
+        </div>
+
+        <div class="credential-item">
+            <strong>🧹 Cleanliness Department</strong>
+            <small>ID: <code>cleanliness</code> | Pass: <code>CleanAdmin@2026</code></small>
+        </div>
+
+        <div class="credential-item">
+            <strong>💧 Drainage Department</strong>
+            <small>ID: <code>drainage</code> | Pass: <code>DrainAdmin@2026</code></small>
+        </div>
+
+        <div class="credential-item" style="border-left-color: #dc3545;">
+            <strong style="color: #dc3545;">👨‍💼 Master Admin</strong>
+            <small>ID: <code>admin</code> | Pass: <code>MainAdmin@2026</code></small>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Track Complaint Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { 
+            --ieee-blue: #00629b; 
+            --ieee-dark: #004066; 
+        }
+        body { 
+            background-color: #f8f9fa; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar { 
+            background-color: var(--ieee-blue); 
+            border-bottom: 4px solid #ffb81c; 
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark shadow-sm">
+    <div class="container d-flex align-items-center">
+        <a class="navbar-brand fw-bold" href="/">Smart Complaint Management</a>
+        <div class="ms-auto">
+            <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold text-primary mb-1"><i class="bi bi-search"></i> Track Your Complaint</h2>
+                    <p class="text-muted mb-4">Enter your Token ID to check the status of your complaint</p>
+                    
+                    <div class="input-group mb-4">
+                        <input type="text" id="tokenInput" class="form-control form-control-lg" 
+                               placeholder="Enter Token ID (e.g., USER-12345-ABC)" 
+                               style="border-radius: 8px 0 0 8px;">
+                        <button class="btn btn-primary btn-lg" id="searchBtn" 
+                                style="background-color: var(--ieee-blue); border-radius: 0 8px 8px 0;">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+
+                    <!-- Results Container -->
+                    <div id="resultsContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const searchBtn = document.getElementById('searchBtn');
+    const tokenInput = document.getElementById('tokenInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+
+    function displayResults(data) {
+        resultsContainer.innerHTML = '';
+        
+        if (data.status === 'success' && data.complaint_found) {
+            const statusBadge = getStatusBadge(data.complaint_status);
+            const complaintId = data.complaint_id;
+            
+            resultsContainer.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> <strong>Complaint Found!</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div class="card border-0 shadow-sm" style="border-radius: 8px; border-left: 5px solid var(--ieee-blue);">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <small class="text-muted">Token ID</small>
+                                <p class="mb-0 fw-bold">${data.token_id}</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <small class="text-muted">Status</small>
+                                <p class="mb-0">${statusBadge}</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0" style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;">${data.response}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            resultsContainer.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle"></i> <strong>Not Found</strong>
+                    <p class="mb-0 mt-2">${data.response || data.message || 'Complaint not found'}</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+    }
+
+    function getStatusBadge(status) {
+        const badges = {
+            'Pending': '<span class="badge bg-secondary rounded-pill"><i class="bi bi-hourglass-split"></i> Pending</span>',
+            'Reviewing': '<span class="badge bg-info text-dark rounded-pill"><i class="bi bi-binoculars"></i> Reviewing</span>',
+            'In Progress': '<span class="badge bg-warning text-dark rounded-pill"><i class="bi bi-tools"></i> In Progress</span>',
+            'Resolved': '<span class="badge bg-success rounded-pill"><i class="bi bi-check-circle"></i> Resolved</span>',
+            'Duplicate': '<span class="badge bg-dark rounded-pill"><i class="bi bi-diagram-2"></i> Merged</span>'
+        };
+        return badges[status] || `<span class="badge bg-primary">${status}</span>`;
+    }
+
+    async function searchComplaint() {
+        const tokenId = tokenInput.value.trim();
+        
+        if (!tokenId) {
+            resultsContainer.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i> Please enter a Token ID
+                </div>
+            `;
+            return;
+        }
+
+        resultsContainer.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+
+        try {
+            const response = await fetch('/api/chatbot/check_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token_id: tokenId })
+            });
+
+            const data = await response.json();
+            displayResults(data);
+        } catch (error) {
+            resultsContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error: ${error.message}
+                </div>
+            `;
+        }
+    }
+
+    searchBtn.addEventListener('click', searchComplaint);
+    
+    tokenInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchComplaint();
+        }
+    });
+</script>
+
+</body>
+</html>

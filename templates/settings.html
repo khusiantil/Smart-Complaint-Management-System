@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Glass Settings | Full Layout</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --sidebar-width: 260px;
+        }
+
+        body { 
+            background: linear-gradient(45deg, #f3f4f9, #e2e8f0);
+            background-attachment: fixed;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2d3436;
+            margin: 0;
+            display: flex;
+        }
+
+        /* Fixed Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--glass-border);
+            height: 100vh;
+            position: fixed;
+            z-index: 1000;
+            padding: 20px 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #636e72;
+            text-decoration: none !important;
+            margin: 5px 15px;
+            border-radius: 12px;
+            transition: 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sidebar-link.active {
+            background: var(--primary-grad);
+            color: white !important;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.2);
+        }
+
+        /* Main Wrapper to hold Header, Content, Footer */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Glass Header */
+        .glass-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        .content-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pagination Style */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .btn-nav {
+            background: white;
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: 0.3s;
+            color: #764ba2;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: #764ba2;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Glass Footer */
+        .glass-footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--glass-border);
+            padding: 20px 40px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .status-badge {
+            background: #e6fffa;
+            color: #2cbb67;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid #b2f5ea;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="px-4 mb-4">
+            <h4 class="fw-bold text-primary">SmartCare AI</h4>
+        </div>
+        <div class="menu-items">
+            <a onclick="showTab('form-settings', 1)" id="link-form-settings" class="sidebar-link active">
+                <i class="bi bi-gear-wide-connected"></i> <span>Settings</span>
+            </a>
+            <a onclick="showTab('confirmations', 2)" id="link-confirmations" class="sidebar-link">
+                <i class="bi bi-check-all"></i> <span>Confirm</span>
+            </a>
+            <a onclick="showTab('notifications', 3)" id="link-notifications" class="sidebar-link">
+                <i class="bi bi-bell-fill"></i> <span>Alerts</span>
+            </a>
+            <a onclick="showTab('personal-data', 4)" id="link-personal-data" class="sidebar-link">
+                <i class="bi bi-shield-lock"></i> <span>Privacy</span>
+            </a>
+        </div>
+        
+        <div style="position: absolute; bottom: 20px; width: 100%;" class="px-3">
+            <div class="p-3 rounded-4 bg-white bg-opacity-40 text-center">
+                <small class="text-muted d-block">Logged in</small>
+                <span class="fw-bold">{{session["user"] or 'User'}}</span>
+                <hr class="my-2 opacity-10">
+                <a href="/logout" class="text-danger text-decoration-none small fw-bold">Sign Out</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        
+        <header class="glass-header d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold m-0" id="header-title">Form Settings</h5>
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-search text-muted"></i>
+                <i class="bi bi-question-circle text-muted"></i>
+                <div class="rounded-circle bg-primary" style="width: 35px; height: 35px;"></div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            
+            <div id="form-settings" class="tab-content active">
+                <div class="content-card">
+                    <h3 class="fw-bold mb-4">General Configuration</h3>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">PORTAL TITLE</label>
+                        <input type="text" class="form-control form-control-lg border-0 shadow-sm" value="Public Grievance System">
+                    </div>
+                    <button class="btn btn-primary px-4 py-2 rounded-3 fw-bold">Save Settings</button>
+                </div>
+            </div>
+
+            <div id="confirmations" class="tab-content">
+                <div class="content-card">
+                    <h3 class="fw-bold mb-4">Confirmation Logic</h3>
+                    <p class="text-muted">Define what happens after a successful form submission.</p>
+                    <div class="p-4 rounded-4 border bg-white bg-opacity-30">
+                        <i class="bi bi-info-circle me-2"></i> Standard Auto-Reply is <b>Enabled</b>.
+                    </div>
+                </div>
+            </div>
+
+            <div id="notifications" class="tab-content">
+                <div class="content-card">
+                    <h3 class="fw-bold mb-4">System Notifications</h3>
+                    <table class="table table-hover mt-3">
+                        <thead class="small text-muted">
+                            <tr><th>EVENT</th><th>STATUS</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>New Complaint Filed</td><td><span class="status-badge">ACTIVE</span></td></tr>
+                            <tr><td>Status Update Email</td><td><span class="status-badge">ACTIVE</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="personal-data" class="tab-content">
+                <div class="content-card">
+                    <h3 class="fw-bold mb-4">Personal Data & Privacy</h3>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                        <label class="form-check-label ms-2" for="flexSwitchCheckDefault">Auto-delete data after 30 days</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination-container">
+                <button onclick="changePage(-1)" id="prevBtn" class="btn-nav" disabled>
+                    <i class="bi bi-chevron-left me-2"></i> Previous
+                </button>
+                <span class="small text-muted fw-bold" id="pageNumber">Step 1 of 4</span>
+                <button onclick="changePage(1)" id="nextBtn" class="btn-nav">
+                    Next <i class="bi bi-chevron-right ms-2"></i>
+                </button>
+            </div>
+        </main>
+
+        <footer class="glass-footer">
+            <p class="small text-muted m-0">© 2026 SmartCare AI Portal. All Rights Reserved. <span class="mx-2">|</span> v2.4.0-stable</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 4;
+        const tabs = ['form-settings', 'confirmations', 'notifications', 'personal-data'];
+        const titles = ['Form Settings', 'Confirmations', 'Notifications', 'Privacy Data'];
+
+        function updateUI() {
+            // Hide all
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+
+            // Show current
+            const currentTabId = tabs[currentPage - 1];
+            document.getElementById(currentTabId).classList.add('active');
+            document.getElementById('link-' + currentTabId).classList.add('active');
+            
+            // Update Header & Nav
+            document.getElementById('header-title').innerText = titles[currentPage - 1];
+            document.getElementById('pageNumber').innerText = `Step ${currentPage} of ${totalPages}`;
+            
+            // Disable/Enable buttons
+            document.getElementById('prevBtn').disabled = (currentPage === 1);
+            document.getElementById('nextBtn').disabled = (currentPage === totalPages);
+        }
+
+        function showTab(tabId, pageIndex) {
+            currentPage = pageIndex;
+            updateUI();
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            updateUI();
+        }
+    </script>
+</body>
+</html>

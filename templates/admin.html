@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ department }} Dashboard - Smart Complaint System</title>
+<style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f4f4f9; margin: 0; }
+    h1 { color: #1e3c72; display: inline-block; margin-top: 0; }
+    .top-actions { float: right; margin-top: 5px; }
+    .btn { padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; margin-left: 10px; display: inline-block; }
+    .btn-danger { background: #dc3545; }
+    .btn-danger:hover { background: #c82333; }
+    .btn-primary { background: #0d6efd; }
+    .btn-primary:hover { background: #0b5ed7; }
+    
+    .dashboard-cards { display: flex; gap: 20px; margin-top: 20px; margin-bottom: 20px; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; text-align: center; }
+    .card h3 { margin: 0 0 10px 0; color: #555; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .card .value { font-size: 32px; font-weight: bold; color: #1e3c72; }
+    
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 15px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+    th { background-color: #1e3c72; color: white; font-weight: normal; }
+    tr:last-child td { border-bottom: none; }
+    
+    .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; white-space: nowrap; margin-bottom: 4px; }
+    .badge-high { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .badge-normal { background-color: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; }
+    .badge-angry { background-color: #000; color: #fff; border: 1px solid #333; animation: pulse 2s infinite; }
+    .badge-frustrated { background-color: #ffc107; color: #000; border: 1px solid #ffb300; font-weight: bold; }
+    .badge-very-angry { background-color: #dc3545; color: #fff; border: 1px solid #c82333; animation: pulse 1.5s infinite; font-weight: bold; }
+    .emotion-alert { display: inline-block; padding: 8px 12px; border-radius: 4px; margin-top: 5px; font-weight: bold; }
+    .emotion-calm { background: #d4edda; color: #155724; }
+    .emotion-neutral { background: #d1ecf1; color: #0c5460; }
+    .emotion-frustrated { background: #fff3cd; color: #856404; }
+    .emotion-angry { background: #f8d7da; color: #721c24; }
+    .emotion-very-angry { background: #dc3545; color: #fff; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    
+    select.status-select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; width: 100%; cursor: pointer;}
+</style>
+
+<script>
+function deleteComplaint(complaintId) {
+    const confirmDelete = confirm('🗑️ Are you sure you want to DELETE this complaint? This action CANNOT be undone!');
+    if (!confirmDelete) return;
+    
+    fetch(`/delete_complaint/${complaintId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('✅ ' + data.message);
+            location.reload();
+        } else {
+            alert('❌ Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('❌ Error deleting complaint: ' + error);
+    });
+}
+</script>
+</head>
+<body>
+
+<h1>🏢 {{ department }} Dashboard</h1>
+<div class="top-actions">
+    <a href="/export_csv" class="btn btn-primary">📊 Download CSV</a>
+    <a href="/admin_map" class="btn btn-primary">🗺️ Live Map Tracker</a>
+    <a href="/admin_logout" class="btn btn-danger">Logout</a>
+</div>
+
+
+
+<!-- Department Navigation -->
+{% if session.get('department') == 'All' %}
+<div style="background: white; padding: 15px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <strong style="display: block; margin-bottom: 12px; color: #1e3c72;">📊 Switch Department:</strong>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <a href="/admin/electricity" style="padding: 10px 15px; background: #ffc107; color: #000; text-decoration: none; border-radius: 5px; font-weight: bold;">⚡ Electricity</a>
+        <a href="/admin/water" style="padding: 10px 15px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">💧 Water</a>
+        <a href="/admin/road" style="padding: 10px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">🛣️ Road</a>
+        <a href="/admin/cleanliness" style="padding: 10px 15px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">🧹 Cleanliness</a>
+        <a href="/admin/drainage" style="padding: 10px 15px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">💧 Drainage</a>
+        <a href="/admin" style="padding: 10px 15px; background: #1e3c72; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">📋 All Departments</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="dashboard-cards">
+    <div class="card">
+        <h3>Total Tickets</h3>
+        <div class="value">{{ stats.total }}</div>
+    </div>
+    <div class="card">
+        <h3>Action Required</h3>
+        <div class="value" style="color: #d9534f;">{{ stats.pending }}</div>
+    </div>
+    <div class="card">
+        <h3>Resolved Cases</h3>
+        <div class="value" style="color: #5cb85c;">{{ stats.resolved }}</div>
+    </div>
+</div>
+
+<table>
+<tr>
+    <th>ID</th>
+    <th>Complaint Details</th>
+    <th>Category & Location</th>
+    <th>Media (Image/Video)</th>
+    <th>AI Tags</th>
+    <th>Timeline Status</th>
+    <th>Update Action</th>
+</tr>
+
+{% for c in complaints %}
+<tr {% if c.priority == 'High' and c.status == 'Pending' %}style="background-color: #fffdfd;"{% endif %}>
+    <td><strong>#{{ c.id }}</strong></td>
+    <td style="max-width: 250px;">{{ c.text }}</td>
+    <td>
+        <strong>{{ c.category }}</strong><br>
+        <small style="color:#666;">📍 {{ c.location }}</small>
+    </td>
+    <td>
+        {% if c.image or c.video %}
+            {% if c.image %}
+            <a href="{{ url_for('static', filename='uploads/' + c.image) }}" target="_blank" title="View Image">
+                <img src="{{ url_for('static', filename='uploads/' + c.image) }}" style="max-width: 80px; max-height: 80px; border-radius: 5px; border: 1px solid #ccc; object-fit: cover; margin-bottom: 5px; display: block;">
+            </a>
+            {% endif %}
+            {% if c.video %}
+            <a href="{{ url_for('static', filename='uploads/' + c.video) }}" target="_blank" title="View Video" style="display: inline-block; background: #667eea; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-decoration: none; margin-top: 5px;">
+                🎬 Video
+            </a>
+            {% endif %}
+        {% else %}
+        <span style="color: #aaa; font-size: 14px;">No Media</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if c.priority == 'High' %}
+            <span class="badge badge-high">🔴 High Priority</span><br>
+        {% else %}
+            <span class="badge badge-normal">Normal</span><br>
+        {% endif %}
+        
+        {% if c.sentiment == 'Angry' %}
+            <span class="badge badge-angry">😠 Frustrated User</span><br>
+        {% endif %}
+        
+        <!-- Emotion State Alert -->
+        {% if c.frustration_level >= 4 %}
+            {% if c.emotion_state == 'Very Angry' %}
+                <span class="emotion-alert emotion-very-angry">🚨 VERY ANGRY - Level {{ c.frustration_level }}/5</span>
+            {% elif c.emotion_state == 'Angry' %}
+                <span class="emotion-alert emotion-angry">🔴 ANGRY - Level {{ c.frustration_level }}/5</span>
+            {% endif %}
+        {% elif c.frustration_level >= 3 %}
+            <span class="emotion-alert emotion-frustrated">⚠️ FRUSTRATED - Level {{ c.frustration_level }}/5</span>
+        {% elif c.frustration_level > 2 %}
+            <span class="emotion-alert emotion-neutral">{{ c.emotion_state }} - Level {{ c.frustration_level }}/5</span>
+        {% else %}
+            <span class="emotion-alert emotion-calm">😊 {{ c.emotion_state }} - Level {{ c.frustration_level }}/5</span>
+        {% endif %}
+    </td>
+    <td>
+        <strong>{{ c.status }}</strong>
+    </td>
+    <td>
+        <select class="status-select" onchange="window.location.href='/update/{{ c.id }}/' + this.value;">
+            <option value="Pending" {% if c.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Reviewing" {% if c.status == 'Reviewing' %}selected{% endif %}>Reviewing</option>
+            <option value="In Progress" {% if c.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Resolved" {% if c.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            <option value="Duplicate" {% if c.status == 'Duplicate' %}selected{% endif %}>Duplicate</option>
+        </select>
+        <button onclick="deleteComplaint({{ c.id }})" style="background: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin-top: 8px; width: 100%; font-weight: bold;">🗑️ Delete</button>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

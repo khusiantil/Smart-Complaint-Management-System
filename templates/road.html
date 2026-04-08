@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Road Complaint</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+
+body{
+background:#f4f6f9;
+}
+
+.navbar{
+background:#0d6efd;
+}
+
+.form-box{
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.preview img{
+height:80px;
+margin:5px;
+border-radius:6px;
+}
+
+footer{
+background:#222;
+color:white;
+padding:20px;
+text-align:center;
+margin-top:50px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<nav class="navbar navbar-dark">
+<div class="container">
+
+<a class="navbar-brand">Smart Complaint System</a>
+
+<a href="/complaint" class="btn btn-light">Back</a>
+
+</div>
+</nav>
+
+
+<!-- MAIN FORM -->
+
+<div class="container mt-5">
+
+<div class="form-box">
+
+<h3 class="mb-4 text-center">Register Road Complaint</h3>
+
+<form>
+
+<!-- Road Issue Category -->
+
+<div class="mb-3">
+
+<label class="form-label">Select Road Issue</label>
+
+<select class="form-select">
+
+<option>Select Issue</option>
+
+<option>Road not constructed</option>
+
+<option>Potholes on road</option>
+
+<option>Broken road</option>
+
+<option>Road accident danger</option>
+
+<option>Water logging on road</option>
+
+<option>Illegal road blockage</option>
+
+</select>
+
+</div>
+
+
+<!-- State -->
+
+<div class="mb-3">
+
+<label class="form-label">Select State</label>
+
+<select class="form-select">
+
+<option>Select State</option>
+
+<option>Haryana</option>
+<option>Delhi</option>
+<option>Punjab</option>
+<option>Uttar Pradesh</option>
+<option>Rajasthan</option>
+<option>Maharashtra</option>
+<option>Gujarat</option>
+<option>Madhya Pradesh</option>
+<option>Bihar</option>
+<option>West Bengal</option>
+
+</select>
+
+</div>
+
+
+<!-- Area -->
+
+<div class="mb-3">
+
+<label class="form-label">Area / City</label>
+
+<input type="text" class="form-control" placeholder="Enter area or city name">
+
+</div>
+
+
+<!-- Upload Photos -->
+
+<div class="mb-3">
+
+<label class="form-label">Upload Road Photos</label>
+
+<input type="file" class="form-control" multiple accept="image/png,image/jpeg,image/jpg" onchange="previewImages(event)">
+
+</div>
+
+<div class="preview" id="preview"></div>
+
+
+<!-- Description -->
+
+<div class="mb-3">
+
+<label class="form-label">Description</label>
+
+<textarea class="form-control" rows="4" placeholder="Describe the problem"></textarea>
+
+</div>
+
+
+<!-- Submit -->
+
+<div class="text-center">
+
+<button type="button" class="btn btn-primary btn-lg" onclick="submitComplaint()">Submit Complaint</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>© 2026 Smart Complaint Management System</p>
+
+</footer>
+
+
+<script>
+
+function previewImages(event){
+
+let preview=document.getElementById("preview");
+preview.innerHTML="";
+
+for(let i=0;i<event.target.files.length;i++){
+
+let img=document.createElement("img");
+img.src=URL.createObjectURL(event.target.files[i]);
+preview.appendChild(img);
+
+}
+
+}
+
+
+function submitComplaint(){
+
+alert("Complaint Submitted Successfully!");
+
+location.reload();
+
+}
+
+</script>
+
+
+</body>
+</html>

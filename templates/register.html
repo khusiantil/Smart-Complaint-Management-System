@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Register - Smart Complaint System</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(to right,#1e3c72,#2a5298);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:15px 20px;
+    background:#111;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:18px;
+}
+
+.lang-select{
+    padding:5px;
+    border-radius:5px;
+}
+
+.container{
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    width:400px;
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#1e3c72;
+}
+
+input{
+    width:95%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    background:#1e3c72;
+    color:white;
+    border:none;
+    font-size:17px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#16325c;
+}
+
+.nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+a{
+    text-decoration:none;
+    color:#1e3c72;
+    font-weight:bold;
+}
+
+.captcha-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+}
+
+.captcha-code{
+    background:#eee;
+    padding:8px 12px;
+    font-weight:bold;
+    letter-spacing:2px;
+    border-radius:5px;
+}
+
+.refresh{
+    cursor:pointer;
+    font-size:14px;
+    color:#1e3c72;
+}
+
+.error{
+    color:red;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div id="systemTitle">Smart Complaint Management System</div>
+    <select class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+    </select>
+</div>
+
+<div class="container">
+
+<h2 id="formTitle">User Registration</h2>
+
+<form action="/register" method="post" onsubmit="return validateCaptcha()">
+
+<input type="text" name="name" id="nameField" placeholder="Enter Full Name" required>
+
+<input type="email" name="email" id="emailField" placeholder="Enter Email" required>
+
+<input type="password" name="password" id="passwordField" placeholder="Enter Password" required>
+
+<div class="captcha-box">
+    <div class="captcha-code" id="captcha"></div>
+    <span class="refresh" id="refreshText" onclick="generateCaptcha()">Refresh</span>
+</div>
+
+<input type="text" id="captchaInput" placeholder="Enter CAPTCHA" required>
+<div class="error" id="captchaError"></div>
+
+<button type="submit" id="registerBtn">Register</button>
+
+</form>
+
+<div class="nav-buttons">
+    <a href="/" id="prevBtn">Previous</a>
+    <a href="/login" id="nextBtn">Next</a>
+</div>
+
+</div>
+
+<script>
+
+/* LANGUAGE SWITCH */
+function changeLanguage(lang){
+
+    if(lang === "hi"){
+
+        document.getElementById("systemTitle").innerText="स्मार्ट शिकायत प्रबंधन प्रणाली";
+        document.getElementById("formTitle").innerText="उपयोगकर्ता पंजीकरण";
+
+        document.getElementById("nameField").placeholder="पूरा नाम दर्ज करें";
+        document.getElementById("emailField").placeholder="ईमेल दर्ज करें";
+        document.getElementById("passwordField").placeholder="पासवर्ड दर्ज करें";
+        document.getElementById("captchaInput").placeholder="कैप्चा दर्ज करें";
+
+        document.getElementById("registerBtn").innerText="पंजीकरण करें";
+        document.getElementById("prevBtn").innerText="पिछला";
+        document.getElementById("nextBtn").innerText="अगला";
+        document.getElementById("refreshText").innerText="रीफ्रेश";
+
+    }
+    else{
+
+        document.getElementById("systemTitle").innerText="Smart Complaint Management System";
+        document.getElementById("formTitle").innerText="User Registration";
+
+        document.getElementById("nameField").placeholder="Enter Full Name";
+        document.getElementById("emailField").placeholder="Enter Email";
+        document.getElementById("passwordField").placeholder="Enter Password";
+        document.getElementById("captchaInput").placeholder="Enter CAPTCHA";
+
+        document.getElementById("registerBtn").innerText="Register";
+        document.getElementById("prevBtn").innerText="Previous";
+        document.getElementById("nextBtn").innerText="Next";
+        document.getElementById("refreshText").innerText="Refresh";
+    }
+}
+
+
+/* CAPTCHA */
+let currentCaptcha="";
+
+function generateCaptcha(){
+    const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    currentCaptcha="";
+    for(let i=0;i<6;i++){
+        currentCaptcha+=chars.charAt(Math.floor(Math.random()*chars.length));
+    }
+    document.getElementById("captcha").innerText=currentCaptcha;
+}
+
+function validateCaptcha(){
+    let input=document.getElementById("captchaInput").value;
+    if(input!==currentCaptcha){
+        document.getElementById("captchaError").innerText="Invalid CAPTCHA!";
+        generateCaptcha();
+        return false;
+    }
+    return true;
+}
+
+generateCaptcha();
+
+</script>
+
+</body>
+</html>

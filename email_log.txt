@@ -1,0 +1,53 @@
+[EMAIL] Attempting to send email to: sajjanyadav.witted@gmail.com | Subject: Complaint Submitted Successfully | Smart Complaint System
+[SUCCESS] Email successfully sent to sajjanyadav.witted@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.witted@gmail.com | Subject: Complaint Submitted Successfully | Smart Complaint System
+[SUCCESS] Email successfully sent to sajjanyadav.witted@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.witted@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to sajjanyadav.witted@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 00:13:25.862661
+[EMAIL] Attempting to send email to: sajjankumarya@gmail.com | Subject: [SUCCESS] Your Complaint Has Been Registered
+[SUCCESS] Email successfully sent to sajjankumarya@gmail.com
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 00:25:23.329875
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 00:26:51.288231
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 00:29:53.220210
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: [SUCCESS] Your Complaint Has Been Registered
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 07:31:03.646761
+[EMAIL] Attempting to send email to: heeralalml020@gmail.com | Subject: [SUCCESS] Your Complaint Has Been Registered
+[SUCCESS] Email successfully sent to heeralalml020@gmail.com
+
+============================================================
+[SUBMISSION] Received complaint submission request at 2026-04-03 07:56:24.041402
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: [SUCCESS] Your Complaint Has Been Registered
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.witted@gmail.com | Subject: Complaint Submitted Successfully | Smart Complaint System
+[SUCCESS] Email successfully sent to sajjanyadav.witted@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: Complaint Submitted Successfully | Smart Complaint System
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.witted@gmail.com | Subject: Complaint Resolved
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to sajjanyadav.witted@gmail.com
+[EMAIL] Attempting to send email to: heeralalml020@gmail.com | Subject: Complaint Status Update: In Progress
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+[EMAIL] Attempting to send email to: sajjanyadav.ml@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to heeralalml020@gmail.com
+[EMAIL] Attempting to send email to: sajjankumarya@gmail.com | Subject: Complaint Resolved
+[SUCCESS] Email successfully sent to sajjanyadav.ml@gmail.com
+[ERROR] Failed to send email to sajjanyadav.witted@gmail.com. Error: UnicodeEncodeError: 'charmap' codec can't encode character '\x8f' in position 117: character maps to <undefined>
+[SUCCESS] Email successfully sent to sajjankumarya@gmail.com
+[EMAIL] Attempting to send email to: rajesh@gmail.com | Subject: Complaint Submitted Successfully | Smart Complaint System
+[SUCCESS] Email successfully sent to rajesh@gmail.com

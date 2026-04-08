@@ -1,0 +1,39 @@
+Complaint,Category
+Road is broken,Road
+Potholes on the main road,Road
+Road has big cracks,Road
+Street road damaged badly,Road
+Uneven road surface,Road
+Road repair needed,Road
+Asphalt damaged on main street,Road
+Broken pavement,Road
+Water supply not working,Water
+No water coming in taps,Water
+Dirty water coming from tap,Water
+Water leakage in pipeline,Water
+Tap water is murky,Water
+Water supply issue,Water
+Contaminated water,Water
+Street light not working,Electricity
+Electric pole damaged,Electricity
+Power cut in my area,Electricity
+Light flickering problem,Electricity
+Electricity problem,Electricity
+No power in my area,Electricity
+Street light broken,Electricity
+Electric wires damaged,Electricity
+Power supply issue,Electricity
+Garbage not collected,Cleanliness
+Dustbin overflowing,Cleanliness
+Bad smell due to garbage,Cleanliness
+Garbage truck not coming,Cleanliness
+Cleanliness issue in area,Cleanliness
+Waste not cleared,Cleanliness
+Drainage blocked,Drainage
+Water logging on street,Drainage
+Sewer overflow problem,Drainage
+Drain not cleaned properly,Drainage
+Blocked drainage system,Drainage
+Water stagnation,Drainage
+Sewer issue,Drainage
+Drain overflow,Drainage

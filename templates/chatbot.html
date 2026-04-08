@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Complaint Chatbot</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Segoe UI';
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.chatbot-container{
+    width:100%;
+    max-width:600px;
+    height:85vh;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(15px);
+    border-radius:15px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+
+.chatbot-header{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+    padding:15px;
+    text-align:center;
+    position:relative;
+}
+
+.clear-btn{
+    position:absolute;
+    right:10px;
+    top:10px;
+    background:white;
+    border:none;
+    padding:5px 10px;
+    border-radius:20px;
+    cursor:pointer;
+    color:#667eea;
+}
+
+.chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:15px;
+    background:#f5f5f5;
+}
+
+.message{
+    margin-bottom:10px;
+    display:flex;
+}
+
+.message.user{justify-content:flex-end;}
+
+.message-content{
+    padding:10px 15px;
+    border-radius:15px;
+    max-width:70%;
+}
+
+.message.user .message-content{
+    background:#667eea;
+    color:white;
+}
+
+.message.bot .message-content{
+    background:#e0e0e0;
+}
+
+.message-time{
+    font-size:10px;
+    opacity:0.6;
+    margin-top:5px;
+    text-align:right;
+}
+
+.typing{font-style:italic;color:#777;}
+
+.chat-input-area{
+    padding:15px;
+    background:white;
+}
+
+.input-group{
+    display:flex;
+    gap:10px;
+}
+
+.chat-input{
+    flex:1;
+    padding:10px;
+    border-radius:20px;
+    border:2px solid #ddd;
+}
+
+.send-button{
+    padding:10px 15px;
+    background:#667eea;
+    color:white;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.quick-actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+}
+
+.quick-btn{
+    padding:6px 12px;
+    background:#eee;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.quick-btn:hover{
+    background:#667eea;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chatbot-container">
+
+<div class="chatbot-header">
+    <h2>🤖 Smart Complaint Assistant</h2>
+    <button class="clear-btn" onclick="clearChat()">Clear</button>
+</div>
+
+<div id="chatMessages" class="chat-messages"></div>
+
+<div class="chat-input-area">
+
+<div class="quick-actions">
+    <div class="quick-btn" onclick="quickFill('Water issue in my area')">💧 Water</div>
+    <div class="quick-btn" onclick="quickFill('Street light not working')">💡 Light</div>
+    <div class="quick-btn" onclick="toggle3PointMode()" id="modeBtn">🔢 3 Point Mode</div>
+    <div class="quick-btn" onclick="quickFill('Ask anything')">🤖 Ask AI</div>
+</div>
+
+<div class="input-group">
+    <input id="input" class="chat-input" placeholder="Type your message...">
+    <button class="send-button" onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+const chat = document.getElementById("chatMessages");
+let is3PointMode = false;
+
+function getTime(){
+    return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function addMessage(text,isUser=false){
+    const msg=document.createElement("div");
+    msg.className=`message ${isUser?'user':'bot'}`;
+
+    const content=document.createElement("div");
+    content.className="message-content";
+
+    content.innerHTML = text + `<div class="message-time">${getTime()}</div>`;
+
+    msg.appendChild(content);
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping(){
+    const typing=document.createElement("div");
+    typing.id="typing";
+    typing.className="message bot";
+    typing.innerHTML=`<div class="message-content typing">Bot is typing...</div>`;
+    chat.appendChild(typing);
+}
+
+function removeTyping(){
+    const t=document.getElementById("typing");
+    if(t) t.remove();
+}
+
+function toggle3PointMode(){
+    is3PointMode = !is3PointMode;
+    const btn = document.getElementById("modeBtn");
+    btn.textContent = is3PointMode ? "🔢 3 Point Mode (ON)" : "🔢 3 Point Mode";
+    btn.style.background = is3PointMode ? "#667eea" : "#eee";
+    btn.style.color = is3PointMode ? "white" : "black";
+}
+
+function sendMessage(){
+    const input=document.getElementById("input");
+    let text=input.value.trim();
+    if(!text) return;
+
+    let displayText = text;
+    let apiText = text;
+    if(is3PointMode){
+        apiText = "3POINT: " + text;
+        displayText = text;  // Display without prefix
+    }
+
+    addMessage(displayText,true);
+    input.value="";
+
+    showTyping();
+
+    setTimeout(()=>{
+        removeTyping();
+        botReply(apiText);
+    },800);
+}
+
+// 🔥 MAIN LOGIC
+async function botReply(text){
+    text=text.toLowerCase();
+    let apiMessage = text;  // Default
+
+    // 1️⃣ WATER (same)
+    if(text.includes("water")){
+        addMessage("🚰 Water issue noted. Please provide location.");
+        return;
+    }
+
+    // 2️⃣ LIGHT (same)
+    else if(text.includes("light")){
+        addMessage("💡 Street light complaint registered.");
+        return;
+    }
+
+    // 3️⃣ MENU OPTIONS - Use LLM for answers
+    else if(text === "1" || text.includes("submit")){
+        apiMessage = "How do I submit a complaint in the Smart Complaint System?";
+    }
+
+    else if(text === "2" || text.includes("status") || text.includes("check")){
+        apiMessage = "How do I check the status of my complaint?";
+    }
+
+    else if(text === "3" || text.includes("ask") || text.includes("question") || text.includes("qa") || text.includes("q&a") || text.includes("categories") || text.includes("category")){
+        apiMessage = "What are the different complaint categories available in the system?";
+    }
+
+    else if(text === "4" || text.includes("help") || text.includes("menu") || text.includes("options")){
+        apiMessage = "What are the available options and how can I use the Smart Complaint Assistant?";
+    }
+
+    // For all other cases, use the original text or show menu
+    else if(text.trim() === ""){
+        addMessage("You can:<br>1. Type '1' or 'submit' to register a complaint<br>2. Type '2' or 'status' to check complaint status<br>3. Type '3' or 'ask' for Q&A with AI<br>4. Type '4' or 'help' for more options");
+        return;
+    }
+
+    // Call LLM for the apiMessage
+    try{
+        const response = await fetch("http://localhost:5000/chat", {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({message: apiMessage})
+        });
+
+        const data = await response.json();
+        addMessage("🤖 " + data.reply);
+
+    }catch(err){
+        addMessage("⚠️ AI server not connected. Please start backend.");
+    }
+}
+
+function quickFill(text){
+    document.getElementById("input").value=text;
+}
+
+function clearChat(){
+    chat.innerHTML="";
+    addMessage("👋 Chat cleared! How can I help you?");
+}
+
+document.addEventListener("keydown",function(e){
+    if(e.key==="Enter"){
+        sendMessage();
+    }
+});
+
+window.onload=()=>{
+    addMessage("👋 Hello! How can I help you today?");
+};
+
+</script>
+
+</body>
+</html>

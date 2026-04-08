@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Complaint - Smart System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: #1a1a2e !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container-main {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .card-complaint {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            color: white;
+        }
+
+        .card-header-custom h2 {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-section {
+            padding: 40px;
+            background: white;
+            color:black;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover {
+            background: #ede9f7;
+            border-color: #764ba2;
+        }
+
+        .upload-area i {
+            font-size: 40px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color:black;
+        }
+
+        .info-box i {
+            color: var(--primary-color);
+            margin-right: 10px;
+            color:black;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .file-name {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color:black;
+        }
+
+        .step-indicator .step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-indicator .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            line-height: 40px;
+            font-weight: bold;
+        }
+
+        .step-indicator .step-number.active {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand fw-bold">
+            <i class="bi bi-exclamation-triangle"></i> Smart Complaint System
+        </span>
+        <a href="/dashboard" class="btn btn-light btn-sm">Back to Dashboard</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container-main">
+    <div class="container">
+        <div class="card-complaint">
+            
+            <!-- Header -->
+            <div class="card-header-custom">
+                <h2>
+                    <i class="bi bi-pencil-square"></i> Register Your Complaint
+                    <span class="ai-badge"><i class="bi bi-stars"></i> SMART COMPLAINT</span>
+                </h2>
+                <p class="mb-0">Smart categorization helps us resolve your issue efficiently</p>
+
+            <!-- Form -->
+            <form method="POST" action="/complaint" enctype="multipart/form-data" class="form-section" id="complaintForm">
+                
+                <!-- Info Box -->
+                <div class="info-box">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>How it works:</strong> Describe your issue, upload a photo, and our AI system will automatically assign the right category and priority.
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step">
+                        <div class="step-number active">1</div>
+                        <small>Describe Issue</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <small>Add Location</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <small>Upload Photo</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <small>Submit</small>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Name and Email -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="fullName" class="form-label">
+                            <i class="bi bi-person"></i> Full Name
+                        </label>
+                        <input type="text" class="form-control" id="fullName" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="email" class="form-label">
+                            <i class="bi bi-envelope"></i> Email Address
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="contact" class="form-label">
+                            <i class="bi bi-telephone"></i> Contact Number
+                        </label>
+                        <input type="tel" class="form-control" id="contact" name="contact" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+
+                <!-- Category Selection -->
+                <div class="mb-4">
+                    <label for="manualCategory" class="form-label">
+                        <i class="bi bi-tags"></i> Complaint Category
+                    </label>
+                    <select class="form-select" id="manualCategory" name="manualCategory">
+                        <option value="Auto">✨ Smart Categorization(Recommended)</option>
+                        <option value="Water">Water</option>
+                        <option value="Electricity">Electricity</option>
+                        <option value="Road">Road</option>
+                        <option value="Cleanliness">Cleanliness</option>
+                        <option value="Drainage">Drainage</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Complaint Text -->
+                <div class="mb-4">
+                    <label for="complaintText" class="form-label">
+                        <i class="bi bi-chat-left-text"></i> Describe Your Complaint in Detail
+                        <span class="ai-badge"><i class="bi bi-stars"></i> SMART COMPLAINT</span>
+                    </label>
+                    <textarea 
+                        class="form-control" 
+                        id="complaintText" 
+                        name="text" 
+                        rows="6" 
+                        placeholder="Please describe your issue clearly:
+• What is the problem? (e.g., street light broken, power cut, water pipe leaking)
+• How long has it been happening?
+• How does it affect you/your area?
+• Any urgent safety concerns?
+
+Example: 'The street light near the market entrance has not been working for 3 days, making it very dark and unsafe for pedestrians at night.'"
+                        required
+                        minlength="15"
+                        maxlength="1024">
+                    </textarea>
+                    <small class="form-text text-muted">
+                        ✓ Min 15 characters | ℹ️ The more details you provide, the faster we can resolve your issue | 
+                        💡 Be specific about location, timeline, and impact
+                    </small>
+                    <div style="margin-top: 10px; padding: 10px; background: #e7f3ff; border-left: 4px solid #0066cc; border-radius: 4px;">
+                        <small><strong>💭 Helpful Tips:</strong> Include WHO is affected, WHEN it started, and WHY it matters. This helps our team prioritize your complaint.</small>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="mb-4">
+                    <label for="location" class="form-label">
+                        <i class="bi bi-geo-alt"></i> Location / Area
+                    </label>
+                    <input type="text" class="form-control mb-2" id="location" name="location" placeholder="Enter location of the issue (e.g., Market Area, Main Street, Sector 5)" required>
+                    
+                    <label class="form-label mt-2"><i class="bi bi-pin-map"></i> Pin Exact Location on Map (Recommended)</label>
+                    <div id="map" style="height: 250px; border-radius: 8px; border: 2px solid #e9ecef; z-index: 1;"></div>
+                    <input type="hidden" id="lat" name="lat">
+                    <input type="hidden" id="lng" name="lng">
+                    <small class="text-muted">Click anywhere on the map to drop a pin.</small>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="mb-4">
+                    <label for="imageUpload" class="form-label">
+                        <i class="bi bi-image"></i> Upload Photo (Optional)
+                    </label>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <p class="mb-2"><strong>Click to upload or drag & drop</strong></p>
+                        <small class="text-muted">PNG, JPG, GIF up to 5MB</small>
+                        <input 
+                            type="file" 
+                            class="form-control d-none" 
+                            id="imageUpload" 
+                            name="image" 
+                            accept="image/*">
+                    </div>
+                    <div id="imagePreview"></div>
+                </div>
+
+                <!-- Video Upload -->
+                <div class="mb-4">
+                    <label for="videoUpload" class="form-label">
+                        <i class="bi bi-film"></i> Upload Video (Optional)
+                    </label>
+                    <div class="upload-area" id="uploadVideoArea">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <p class="mb-2"><strong>Click to upload or drag & drop</strong></p>
+                        <small class="text-muted">MP4, AVI, MOV, MKV up to 50MB</small>
+                        <input 
+                            type="file" 
+                            class="form-control d-none" 
+                            id="videoUpload" 
+                            name="video" 
+                            accept="video/*">
+                    </div>
+                    <div id="videoPreview"></div>
+                </div>
+
+                <!-- AI Processing Info -->
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-lightning"></i> 
+                    <strong>AI Processing:</strong> After submission, your complaint is smartly categorized for faster resolution.(Electricity, Water, Road, Drainage, etc.)
+                </div>
+
+                <!-- Buttons -->
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <a href="/dashboard" class="btn btn-back w-100">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-submit">
+                            <i class="bi bi-check-circle"></i> Submit Complaint
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2026 Smart Complaint Management System </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Leaflet Map Initialization
+    let leafletMap = L.map('map').setView([28.6139, 77.2090], 10); // default delhi
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(leafletMap);
+    let marker;
+    
+    // Auto-locate
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            leafletMap.setView([position.coords.latitude, position.coords.longitude], 14);
+        });
+    }
+
+    leafletMap.on('click', function(e) {
+        if (marker) { leafletMap.removeLayer(marker); }
+        marker = L.marker(e.latlng).addTo(leafletMap);
+        document.getElementById('lat').value = e.latlng.lat;
+        document.getElementById('lng').value = e.latlng.lng;
+    });
+
+    // Image Upload Handler
+    const uploadArea = document.getElementById('uploadArea');
+    const imageUpload = document.getElementById('imageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+
+    uploadArea.addEventListener('click', () => imageUpload.click());
+
+    // Drag & Drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.background = '#ede9f7';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.background = '#f8f9ff';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        imageUpload.files = e.dataTransfer.files;
+        displayPreview();
+    });
+
+    // File Selection
+    imageUpload.addEventListener('change', displayPreview);
+
+    function displayPreview() {
+        imagePreview.innerHTML = '';
+        if (imageUpload.files.length > 0) {
+            const file = imageUpload.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.innerHTML = `
+                    <div style="margin-top: 15px;">
+                        <img src="${e.target.result}" class="preview-image">
+                        <p class="file-name"><i class="bi bi-check-circle text-success"></i> ${file.name}</p>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Video Upload Handler
+    const uploadVideoArea = document.getElementById('uploadVideoArea');
+    const videoUpload = document.getElementById('videoUpload');
+    const videoPreview = document.getElementById('videoPreview');
+
+    uploadVideoArea.addEventListener('click', () => videoUpload.click());
+
+    // Drag & Drop for Video
+    uploadVideoArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadVideoArea.style.background = '#ede9f7';
+    });
+
+    uploadVideoArea.addEventListener('dragleave', () => {
+        uploadVideoArea.style.background = '#f8f9ff';
+    });
+
+    uploadVideoArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('video/')) {
+            videoUpload.files = e.dataTransfer.files;
+            displayVideoPreview();
+        } else {
+            alert('❌ Please drop a video file!');
+        }
+    });
+
+    // File Selection for Video
+    videoUpload.addEventListener('change', function() {
+        if (this.files.length > 0 && !this.files[0].type.startsWith('video/')) {
+            alert('❌ Please select a video file!');
+            this.value = '';
+        } else {
+            displayVideoPreview();
+        }
+    });
+
+    function displayVideoPreview() {
+        videoPreview.innerHTML = '';
+        if (videoUpload.files.length > 0) {
+            const file = videoUpload.files[0];
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            if (sizeMB > 50) {
+                alert('❌ Video size must be less than 50MB!');
+                videoUpload.value = '';
+                videoPreview.innerHTML = '';
+                return;
+            }
+            videoPreview.innerHTML = `
+                <div style="margin-top: 15px;">
+                    <p class="file-name"><i class="bi bi-check-circle text-success"></i> 🎬 ${file.name} (${sizeMB}MB)</p>
+                </div>
+            `;
+        }
+    }
+
+    // Form Validation
+    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+        const text = document.getElementById('complaintText').value;
+        if (text.length < 10) {
+            e.preventDefault();
+            alert('Please provide at least 10 characters in your complaint description.');
+        }
+    });
+</script>
+
+</body>
+</html>
